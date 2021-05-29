@@ -1,0 +1,46 @@
+﻿<Page x:Class="GUI.pageDraft.Info"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:GUI.pageDraft"
+      mc:Ignorable="d" 
+      d:DesignHeight="520" d:DesignWidth="600"
+      Title="Info">
+
+    <Grid>
+
+        <!--// Info Text //-->
+
+        <StackPanel>
+            <TextBlock Text="//INFO"
+                       Foreground="Black"
+                       FontSize="20" FontFamily="/GUI;component/Assets/#Dosis"
+                       FontWeight="Bold"/>
+
+            <TextBlock Text=""
+                       Foreground="Black"
+                       FontSize="20" FontFamily="/GUI;component/Assets/#Dosis"
+                       FontWeight="Bold"/>
+
+            <TextBlock Text="Sam2D is a free software, that can be used to convert your photos to monochrome vector pitcures. This program uses Face Recognition Technology, that will search and focus your face then convert it with the help of a neural network. Supported by a simple and clean user interface so that you can easily use this program. PeepoHappy"
+                       Foreground="Black"
+                       FontSize="25" FontFamily="/GUI;component/Assets/#Dosis"
+                       TextWrapping="Wrap"
+                       Width="570"
+                       HorizontalAlignment="Left"/>
+
+            <TextBlock Text=""
+                       Foreground="Black"
+                       FontSize="20" FontFamily="/GUI;component/Assets/#Dosis"
+                       FontWeight="Bold"/>
+
+            <TextBlock Text="Eigentlich haben wir dieses Programm gemacht, um das Programmierungsprojekt zu bestehen"
+                       Foreground="Black"
+                       FontSize="13" FontFamily="/GUI;component/Assets/#Dosis"
+                       TextWrapping="Wrap"/>
+
+        </StackPanel>
+
+    </Grid>
+</Page>
