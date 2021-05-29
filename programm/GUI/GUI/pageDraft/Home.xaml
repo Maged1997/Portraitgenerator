@@ -15,23 +15,23 @@
         <StackPanel>
             <TextBlock Text="//HOME"
                        Foreground="Black"
-                       FontSize="20" FontFamily="/Tutorial;component/Assets/#Dosis"
+                       FontSize="20" FontFamily="/GUI;component/Assets/#Dosis"
                        FontWeight="Bold"/>
 
             <TextBlock Text="Welcome"
                        Foreground="Black"
-                       FontSize="70" FontFamily="/Tutorial;component/Assets/#Dosis"
+                       FontSize="70" FontFamily="/GUI;component/Assets/#Dosis"
                        FontWeight="Bold" Margin="0,10,0,0"/>
             <TextBlock Text="to"
                        Foreground="Black"
-                       FontSize="70" FontFamily="/Tutorial;component/Assets/#Dosis"
+                       FontSize="70" FontFamily="/GUI;component/Assets/#Dosis"
                        FontWeight="Bold"/>
             <TextBlock Text="Sam2D"
                        Foreground="Black"
-                       FontSize="70" FontFamily="/Tutorial;component/Assets/#Dosis"
+                       FontSize="70" FontFamily="/GUI;component/Assets/#Dosis"
                        FontWeight="Bold"/>
             <TextBlock Text="Potraitgenerator Software" Foreground="Black"
-                       FontSize="40" FontFamily="/Tutorial;component/Assets/#Dosis"
+                       FontSize="40" FontFamily="/GUI;component/Assets/#Dosis"
                        Margin="0,20,0,0"/>
 
         </StackPanel>
@@ -54,7 +54,7 @@
                             BorderBrush="Black"
                             Content="Let's get started"
                             Foreground="Black"
-                            FontFamily="/Tutorial;component/Assets/#Dosis"
+                            FontFamily="/GUI;component/Assets/#Dosis"
                             FontSize="28" Click="Button_Click">
                 <Button.Resources>
 

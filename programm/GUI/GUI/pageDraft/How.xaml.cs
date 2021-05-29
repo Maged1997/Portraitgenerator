@@ -78,7 +78,7 @@ namespace GUI.pageDraft
 
         private void Start_Btn_Click(object sender, RoutedEventArgs e)
         {
-            this.NavigationService.Navigate(new Uri("Image.xaml", UriKind.Relative));
+            this.NavigationService.Navigate(new Uri("pageDraft/Image.xaml", UriKind.Relative));
         }
     }
 }

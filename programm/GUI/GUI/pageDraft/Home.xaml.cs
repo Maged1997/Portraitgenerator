@@ -27,7 +27,7 @@ namespace GUI.pageDraft
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            this.NavigationService.Navigate(new Uri("About.xaml", UriKind.Relative));
+            this.NavigationService.Navigate(new Uri("pageDraft/How.xaml", UriKind.Relative));
         }
     }
 }
