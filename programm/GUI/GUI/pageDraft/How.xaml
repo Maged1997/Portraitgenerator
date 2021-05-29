@@ -1,0 +1,155 @@
+﻿<Page x:Class="GUI.pageDraft.How"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:GUI.pageDraft"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="950"
+      Title="How">
+
+    <Grid>
+
+        <StackPanel>
+            <TextBlock Text="//HOW TO USE?"
+                       Foreground="Black"
+                       FontSize="20" FontFamily="/GUI;component/Assets/#Dosis"
+                       FontWeight="Bold"/>
+
+            <TextBlock Text=""
+                       Foreground="Black"
+                       FontSize="20" FontFamily="/GUI;component/Assets/#Dosis"
+                       FontWeight="Bold"/>
+        </StackPanel>
+
+        <Grid Margin="0,40,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="280"/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Text="1. Choose your photos"
+                       Foreground="Black"
+                       FontSize="25" FontFamily="/GUI;component/Assets/#Dosis"/>
+
+            <!--// Drag and Drop Upload //-->
+
+            <StackPanel Margin="0,90,50,0">
+
+                <Rectangle
+                        AllowDrop="True"
+                        Drop="Rectangle_Drop"
+                        Fill="WhiteSmoke"
+                        RadiusX="10"
+                        RadiusY="10"
+                        StrokeDashArray="3"
+                        StrokeThickness="6"
+                        StrokeDashCap="Flat"
+                        Stroke="Black"
+                        Height="200"
+                        Width="200">
+
+                </Rectangle>
+
+                <Button Background="LightBlue"
+                            BorderThickness="2"
+                            BorderBrush="Black"
+                            Content="Choose photo"
+                            Foreground="Black"
+                            FontFamily="/GUI;component/Assets/#Dosis"
+                            FontSize="20"
+                            Height="30"
+                            Width="120"
+                            Margin="0,30,0,0" Click="Button_Click">
+                    <Button.Resources>
+
+                        <Style TargetType="{x:Type Border}">
+
+                            <Setter Property="CornerRadius" Value="8"/>
+
+                        </Style>
+
+                    </Button.Resources>
+
+                </Button>
+
+            </StackPanel>
+
+            <StackPanel Margin="0,140,50,0">
+                <Image Source="photo.png"
+                               Stretch="Fill"
+                               Height="50"
+                               Width="50"/>
+
+                <TextBlock Text="Drop photo to process"
+                               FontSize="20"
+                               FontFamily="/GUI;component/Assets/#Dosis"
+                               HorizontalAlignment="Center"/>
+
+            </StackPanel>
+
+            <TextBlock Text=" 2. Are you sure? Check it!"
+                       Grid.Column="1"
+                       Foreground="Black"
+                       FontSize="25" FontFamily="/GUI;component/Assets/#Dosis"/>
+
+            <!--// Uploading File List //-->
+
+            <ScrollViewer Height="330"
+                          Width="280"
+                          HorizontalScrollBarVisibility="Disabled"
+                          VerticalScrollBarVisibility="Hidden"
+                          Grid.Column="1"
+                          Margin="0,20,30,0">
+
+                <Grid>
+                    <ItemsControl x:Name="UploadingFilesList">
+
+                        <TextBlock Text="Processing images...."
+                                   FontSize="20"
+                                   FontFamily="/GUI;component/Assets/#Dosis"/>
+                        <TextBlock Text=""
+                                   FontSize="10"
+                                   FontFamily="/GUI;component/Assets/#Dosis"/>
+
+                    </ItemsControl>
+
+                </Grid>
+
+            </ScrollViewer>
+
+            <TextBlock Text="3. If you sure, then..."
+                       Grid.Column="2"
+                       Foreground="Black"
+                       FontSize="25" FontFamily="/GUI;component/Assets/#Dosis"/>
+
+            <!--// Start Converter Button //-->
+
+            <Button x:Name="Start_Btn" Background="LightGreen"
+                    BorderThickness="4"
+                    BorderBrush="Black"
+                    Content="Start converting"
+                    Foreground="Black"
+                    FontFamily="/GUI;component/Assets/#Dosis"
+                    FontSize="35"
+                    Grid.Column="2" Width="250" Height="70"
+                    Margin="0,0,60,100" Click="Start_Btn_Click"
+                    IsEnabled="False"
+                    >
+                <Button.Resources>
+
+                    <Style TargetType="{x:Type Border}">
+
+                        <Setter Property="CornerRadius" Value="20"/>
+
+                    </Style>
+
+                </Button.Resources>
+
+            </Button>
+
+        </Grid>
+
+    </Grid>
+</Page>
