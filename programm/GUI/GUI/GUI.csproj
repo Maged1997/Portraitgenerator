@@ -86,6 +86,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <Resource Include="Assets\Dosis.ttf" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -93,6 +94,23 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\about.png" />
+    <Resource Include="Assets\background.png" />
+    <Resource Include="Assets\book.png" />
+    <Resource Include="Assets\close.png" />
+    <Resource Include="Assets\delete.png" />
+    <Resource Include="Assets\download.png" />
+    <Resource Include="Assets\home.png" />
+    <Resource Include="Assets\info.png" />
+    <Resource Include="Assets\list.png" />
+    <Resource Include="Assets\menu.png" />
+    <Resource Include="Assets\MenuPhoto.png" />
+    <Resource Include="Assets\note.png" />
+    <Resource Include="Assets\phone.png" />
+    <Resource Include="Assets\photo.png" />
+    <Resource Include="Assets\user.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
