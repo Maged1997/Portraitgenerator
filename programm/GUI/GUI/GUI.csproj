@@ -67,8 +67,15 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="pageDraft\Home.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="pageDraft\Home.xaml.cs">
+      <DependentUpon>Home.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -106,11 +113,13 @@
     <Resource Include="Assets\info.png" />
     <Resource Include="Assets\list.png" />
     <Resource Include="Assets\menu.png" />
-    <Resource Include="Assets\MenuPhoto.png" />
     <Resource Include="Assets\note.png" />
     <Resource Include="Assets\phone.png" />
     <Resource Include="Assets\photo.png" />
     <Resource Include="Assets\user.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="pageDraft\MenuPhoto.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
