@@ -1,9 +1,12 @@
-﻿using GUI.CustomControl;
+﻿using Emgu.CV;
+using Emgu.CV.Structure;
+using GUI.CustomControl;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -23,6 +26,33 @@ namespace GUI.pageDraft
     /// </summary>
     public partial class How : Page
     {
+        Image<Bgr, byte> imgInput;
+        Image<Gray, byte> imgGray;
+        Image<Gray, byte> imgBinarize;
+
+        public static class BitmapSourceConvert
+        {
+            [DllImport("gdi32")]
+            private static extern int DeleteObject(IntPtr o);
+
+            public static BitmapSource ToBitmapSource(IImage image)
+            {
+                using (System.Drawing.Bitmap source = image.Bitmap)
+                {
+                    IntPtr ptr = source.GetHbitmap();
+
+                    BitmapSource bs = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
+                        ptr,
+                        IntPtr.Zero,
+                        Int32Rect.Empty,
+                        System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
+
+                    DeleteObject(ptr);
+                    return bs;
+                }
+            }
+        }
+
         public How()
         {
             InitializeComponent();
@@ -34,51 +64,35 @@ namespace GUI.pageDraft
             {
                 string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
                 string fileName = System.IO.Path.GetFileName(files[0]);
+                Uri filePath = new Uri(files[0]);
 
-                for (int i = 0; i < files.Length; i++)
-                {
-                    string filename = System.IO.Path.GetFileName(files[i]);
-                    FileInfo fileInfo = new FileInfo(files[i]);
-                    UploadingFilesList.Items.Add(new fileDetail()
-                    {
-                        FileName = filename,
+                ImagePreviewer.Source = new BitmapImage(filePath);
 
-                        FileSize = string.Format("{0} {1}", (fileInfo.Length / 1.049e+6).ToString("0.0"), "Mb"),
-                        UploadProgress = 100
-                    });
-                }
             }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog() { Multiselect = true };
+            OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Image files (*.png;*.jpeg;*.jpg)|*.png;*.jpeg;*.jpg|All files (*.*)|*.*";
             bool? response = openFileDialog.ShowDialog();
 
             if (response == true)
             {
-                string[] files = openFileDialog.FileNames;
                 Start_Btn.IsEnabled = true;
 
-                for (int i = 0; i < files.Length; i++)
-                {
-                    string filename = System.IO.Path.GetFileName(files[i]);
-                    FileInfo fileInfo = new FileInfo(files[i]);
-                    UploadingFilesList.Items.Add(new fileDetail()
-                    {
-                        FileName = filename,
+                imgInput = new Image<Bgr, byte>(openFileDialog.FileName);
 
-                        FileSize = string.Format("{0} {1}", (fileInfo.Length / 1.049e+6).ToString("0.0"), "Mb"),
-                        UploadProgress = 100
-                    });
-                }
+                ImagePreviewer.Source = BitmapSourceConvert.ToBitmapSource(imgInput);
             }
         }
 
         private void Start_Btn_Click(object sender, RoutedEventArgs e)
         {
-            this.NavigationService.Navigate(new Uri("pageDraft/Image.xaml", UriKind.Relative));
+            imgGray = imgInput.Convert<Gray, byte>();
+            imgBinarize = new Image<Gray, byte>(imgGray.Width, imgGray.Height, new Gray(0));
+            double threshold = CvInvoke.Threshold(imgGray, imgBinarize, 500, 255, Emgu.CV.CvEnum.ThresholdType.Otsu);
+            ImageAfter.Source = new BitmapImage(imgBinarize);
         }
     }
 }

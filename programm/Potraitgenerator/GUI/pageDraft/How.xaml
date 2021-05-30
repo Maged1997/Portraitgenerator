@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:GUI.pageDraft"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="950"
+      d:DesignHeight="700" d:DesignWidth="1200"
       Title="How">
 
     <Grid>
@@ -25,11 +25,11 @@
         <Grid Margin="0,40,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="280"/>
-                <ColumnDefinition/>
+                <ColumnDefinition Width="400"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Text="1. Choose your photos"
+            <TextBlock Text="1. Choose your photo"
                        Foreground="Black"
                        FontSize="25" FontFamily="/GUI;component/Assets/#Dosis"/>
 
@@ -93,62 +93,47 @@
                        Grid.Column="1"
                        Foreground="Black"
                        FontSize="25" FontFamily="/GUI;component/Assets/#Dosis"/>
+            
+            <StackPanel Grid.Column="1">
+                <Image x:Name="ImagePreviewer" Margin="0,50,30,0" Height="400" />
+                
+                <!--// Start Converter Button //-->
 
-            <!--// Uploading File List //-->
+                <Button x:Name="Start_Btn" Background="LightGreen"
+                    BorderThickness="4"
+                    BorderBrush="Black"
+                    Content="Start converting"
+                    Foreground="Black"
+                    FontFamily="/GUI;component/Assets/#Dosis"
+                    FontSize="30"
+                    Grid.Column="1" Width="250" Height="50"
+                    Margin="0,20,60,0" Click="Start_Btn_Click"
+                    IsEnabled="False"
+                    >
+                    <Button.Resources>
 
-            <ScrollViewer Height="330"
-                          Width="280"
-                          HorizontalScrollBarVisibility="Disabled"
-                          VerticalScrollBarVisibility="Hidden"
-                          Grid.Column="1"
-                          Margin="0,20,30,0">
+                        <Style TargetType="{x:Type Border}">
 
-                <Grid>
-                    <ItemsControl x:Name="UploadingFilesList">
+                            <Setter Property="CornerRadius" Value="20"/>
 
-                        <TextBlock Text="Processing images...."
-                                   FontSize="20"
-                                   FontFamily="/GUI;component/Assets/#Dosis"/>
-                        <TextBlock Text=""
-                                   FontSize="10"
-                                   FontFamily="/GUI;component/Assets/#Dosis"/>
+                        </Style>
 
-                    </ItemsControl>
+                    </Button.Resources>
 
-                </Grid>
+                </Button>
 
-            </ScrollViewer>
+            </StackPanel>
+
 
             <TextBlock Text="3. If you sure, then..."
                        Grid.Column="2"
                        Foreground="Black"
                        FontSize="25" FontFamily="/GUI;component/Assets/#Dosis"/>
 
-            <!--// Start Converter Button //-->
-
-            <Button x:Name="Start_Btn" Background="LightGreen"
-                    BorderThickness="4"
-                    BorderBrush="Black"
-                    Content="Start converting"
-                    Foreground="Black"
-                    FontFamily="/GUI;component/Assets/#Dosis"
-                    FontSize="35"
-                    Grid.Column="2" Width="250" Height="70"
-                    Margin="0,0,60,100" Click="Start_Btn_Click"
-                    IsEnabled="False"
-                    >
-                <Button.Resources>
-
-                    <Style TargetType="{x:Type Border}">
-
-                        <Setter Property="CornerRadius" Value="20"/>
-
-                    </Style>
-
-                </Button.Resources>
-
-            </Button>
-
+            <StackPanel Grid.Column="2">
+                <Image x:Name="ImageAfter" Margin="0,50,20,0" Height="500"/>
+            </StackPanel>
+            
         </Grid>
 
     </Grid>

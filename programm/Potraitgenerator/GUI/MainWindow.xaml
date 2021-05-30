@@ -5,8 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GUI"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="1100"
-        ResizeMode="NoResize"
+        Title="MainWindow" Height="800" Width="1400"
         Topmost="True"
         WindowStyle="None"
         WindowStartupLocation="CenterScreen">
@@ -178,8 +177,8 @@
             <!--// Page Frame //-->
 
             <DockPanel>
-                <Frame x:Name="Main" Margin="100,70,0,0" NavigationUIVisibility="Hidden"
-                       Height="520" Width="950"/>
+                <Frame x:Name="Main" Margin="0,70,0,0" NavigationUIVisibility="Hidden"
+                       Height="700" Width="1200"/>
             </DockPanel>
 
             <!--// App Close Button //-->
