@@ -4,6 +4,7 @@ using GUI.CustomControl;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -14,6 +15,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
@@ -30,27 +32,18 @@ namespace GUI.pageDraft
         Image<Gray, byte> imgGray;
         Image<Gray, byte> imgBinarize;
 
-        public static class BitmapSourceConvert
+        [DllImport("gdi32.dll", EntryPoint = "DeleteObject")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool DeleteObject([In] IntPtr hObject);
+
+        public ImageSource ImageSourceFromBitmap(Bitmap bmp)
         {
-            [DllImport("gdi32")]
-            private static extern int DeleteObject(IntPtr o);
-
-            public static BitmapSource ToBitmapSource(IImage image)
+            var handle = bmp.GetHbitmap();
+            try
             {
-                using (System.Drawing.Bitmap source = image.Bitmap)
-                {
-                    IntPtr ptr = source.GetHbitmap();
-
-                    BitmapSource bs = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
-                        ptr,
-                        IntPtr.Zero,
-                        Int32Rect.Empty,
-                        System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
-
-                    DeleteObject(ptr);
-                    return bs;
-                }
+                return Imaging.CreateBitmapSourceFromHBitmap(handle, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
             }
+            finally { DeleteObject(handle); }
         }
 
         public How()
@@ -83,7 +76,9 @@ namespace GUI.pageDraft
 
                 imgInput = new Image<Bgr, byte>(openFileDialog.FileName);
 
-                ImagePreviewer.Source = BitmapSourceConvert.ToBitmapSource(imgInput);
+                Bitmap img = imgInput.ToBitmap();
+
+                ImagePreviewer.Source = ImageSourceFromBitmap(img);
             }
         }
 
@@ -92,7 +87,9 @@ namespace GUI.pageDraft
             imgGray = imgInput.Convert<Gray, byte>();
             imgBinarize = new Image<Gray, byte>(imgGray.Width, imgGray.Height, new Gray(0));
             double threshold = CvInvoke.Threshold(imgGray, imgBinarize, 500, 255, Emgu.CV.CvEnum.ThresholdType.Otsu);
-            ImageAfter.Source = new BitmapImage(imgBinarize);
+
+            Bitmap img = imgBinarize.ToBitmap();
+            ImageAfter.Source = ImageSourceFromBitmap(img);
         }
     }
 }
