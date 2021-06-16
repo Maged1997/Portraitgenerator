@@ -28,10 +28,16 @@ namespace GUI.pageDraft
     /// </summary>
     public partial class How : Page
     {
-        Image<Bgr, byte> imgInput;
+
+        // Converter Variable
+
+        System.Drawing.Image InputImg;
+        Image<Bgr, byte> ImageFrame;
         Image<Gray, byte> imgGray;
         Image<Gray, byte> imgBinarize;
+        private CascadeClassifier cascadeClassifier = new CascadeClassifier(@"C:\Users\Azim Izzudin\source\repos\OMG2\OMG2\haarcascade_frontalface_default.xml");
 
+        // Bitmap to Imagesource Converter
         [DllImport("gdi32.dll", EntryPoint = "DeleteObject")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool DeleteObject([In] IntPtr hObject);
@@ -51,6 +57,7 @@ namespace GUI.pageDraft
             InitializeComponent();
         }
 
+        // Drag and Drop
         private void Rectangle_Drop(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
@@ -74,22 +81,126 @@ namespace GUI.pageDraft
             {
                 Start_Btn.IsEnabled = true;
 
-                imgInput = new Image<Bgr, byte>(openFileDialog.FileName);
-
-                Bitmap img = imgInput.ToBitmap();
-
+                InputImg = AutoResizeImage(openFileDialog.FileName);
+                ImageFrame = new Image<Bgr, byte>(new Bitmap(InputImg));
+                Bitmap img = ImageFrame.ToBitmap();
                 ImagePreviewer.Source = ImageSourceFromBitmap(img);
+                DetectFaces();
             }
         }
 
+        
         private void Start_Btn_Click(object sender, RoutedEventArgs e)
         {
-            imgGray = imgInput.Convert<Gray, byte>();
+            /*
+            imgGray = ImageFrame.Convert<Gray, byte>();
             imgBinarize = new Image<Gray, byte>(imgGray.Width, imgGray.Height, new Gray(0));
             double threshold = CvInvoke.Threshold(imgGray, imgBinarize, 500, 255, Emgu.CV.CvEnum.ThresholdType.Otsu);
 
             Bitmap img = imgBinarize.ToBitmap();
             ImageAfter.Source = ImageSourceFromBitmap(img);
+            */
+        }
+        
+
+        public System.Drawing.Image AutoResizeImage(string url)
+        {
+            var InputImg = System.Drawing.Image.FromFile(url);
+            var ImageFrame = new Image<Bgr, byte>(new Bitmap(InputImg));
+            Image<Gray, byte> grayframe = ImageFrame.Convert<Gray, byte>();
+            var faces = cascadeClassifier.DetectMultiScale(grayframe, 1.1, 10, System.Drawing.Size.Empty);
+
+            if (faces.Length > 0)
+            {
+                Bitmap BmpInput = grayframe.ToBitmap();
+                Bitmap ExtractedFace;
+                Graphics FaceCanvas;
+
+                foreach (var face in faces)
+                {
+                    ImageFrame.Draw(face, new Bgr(System.Drawing.Color.Blue), 4);
+                    ExtractedFace = new Bitmap(face.Width, face.Height);
+                    FaceCanvas = Graphics.FromImage(ExtractedFace);
+
+                    FaceCanvas.DrawImage(BmpInput, 0, 0, face, GraphicsUnit.Pixel);
+                    int w = face.Width;
+                    int h = face.Height;
+                    int x = face.X;
+                    int y = face.Y;
+
+                    int r = Math.Max(250, 250) / 2;
+                    int centerx = x + w / 2;
+                    int centery = y + h / 2;
+                    int nx = (int)(centerx - r);
+                    int ny = (int)(centery - r);
+                    int nr = (int)(r * 5);
+
+
+                    double zoomFactor = (double)197 / (double)face.Width;
+                    System.Drawing.Size newSize = new System.Drawing.Size((int)(InputImg.Width * zoomFactor), (int)(InputImg.Height * zoomFactor));
+                    Bitmap bmp = new Bitmap(InputImg, newSize);
+                    return (System.Drawing.Image)bmp;
+                }
+
+
+            }
+            return InputImg;
+        }
+
+        private void DetectFaces()
+        {
+            Image<Gray, byte> grayframe = ImageFrame.Convert<Gray, byte>();
+            var faces = cascadeClassifier.DetectMultiScale(grayframe, 1.1, 10, System.Drawing.Size.Empty);
+            if (faces.Length > 0)
+            {
+                Bitmap BmpInput = grayframe.ToBitmap();
+                Bitmap ExtractedFace;
+                Graphics FaceCanvas;
+
+                foreach (var face in faces)
+                {
+                    ImageFrame.Draw(face, new Bgr(System.Drawing.Color.Blue), 4);
+                    ExtractedFace = new Bitmap(face.Width, face.Height);
+                    FaceCanvas = Graphics.FromImage(ExtractedFace);
+                    FaceCanvas.DrawImage(BmpInput, 0, 0, face, GraphicsUnit.Pixel);
+                    if (face.Width < 100) { return; }
+                    int w = face.Width;
+                    int h = face.Height;
+                    int x = face.X;
+                    int y = face.Y;
+
+                    int r = Math.Max(250, 250) / 2;
+                    int centerx = x + w / 2;
+                    int centery = y + h / 2;
+                    int nx = (int)(centerx - r);
+                    int ny = (int)(centery - r);
+                    int nr = (int)(r * 5);
+
+
+                    double zoomFactor = (double)197 / (double)face.Width;
+                    System.Drawing.Size newSize = new System.Drawing.Size((int)(InputImg.Width * zoomFactor), (int)(InputImg.Height * zoomFactor));
+                    Bitmap bmp = new Bitmap(InputImg, newSize);
+                    System.Drawing.Image image = (System.Drawing.Image)bmp;
+                    var imgextract = CropImage(image, nx + 4, ny - 25, 248, 340);
+                    ImageAfter.Source = ImageSourceFromBitmap(imgextract);
+                }
+
+                Bitmap img = ImageFrame.ToBitmap();
+                ImagePreviewer.Source = ImageSourceFromBitmap(img);
+            }
+
+        }
+
+        public static Bitmap CropImage(System.Drawing.Image source, int x, int y, int width, int height)
+        {
+            System.Drawing.Rectangle crop = new System.Drawing.Rectangle(x, y, width, height);
+
+            var bmp = new Bitmap(crop.Width, crop.Height);
+            using (var gr = Graphics.FromImage(bmp))
+            {
+                gr.DrawImage(source, new System.Drawing.Rectangle(0, 0, bmp.Width, bmp.Height), crop, GraphicsUnit.Pixel);
+            }
+            return bmp;
         }
     }
 }
