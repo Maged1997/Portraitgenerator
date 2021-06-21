@@ -2,11 +2,14 @@
 using Emgu.CV.Structure;
 using GUI.CustomControl;
 using Microsoft.Win32;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,8 +36,7 @@ namespace GUI.pageDraft
 
         System.Drawing.Image InputImg;
         Image<Bgr, byte> ImageFrame;
-        Image<Gray, byte> imgGray;
-        Image<Gray, byte> imgBinarize;
+
         private CascadeClassifier cascadeClassifier = new CascadeClassifier(@"C:\Users\Azim Izzudin\source\repos\OMG2\OMG2\haarcascade_frontalface_default.xml");
 
         // Bitmap to Imagesource Converter
@@ -85,24 +87,107 @@ namespace GUI.pageDraft
                 ImageFrame = new Image<Bgr, byte>(new Bitmap(InputImg));
                 Bitmap img = ImageFrame.ToBitmap();
                 ImagePreviewer.Source = ImageSourceFromBitmap(img);
-                DetectFaces();
             }
         }
 
         
         private void Start_Btn_Click(object sender, RoutedEventArgs e)
         {
-            /*
-            imgGray = ImageFrame.Convert<Gray, byte>();
-            imgBinarize = new Image<Gray, byte>(imgGray.Width, imgGray.Height, new Gray(0));
-            double threshold = CvInvoke.Threshold(imgGray, imgBinarize, 500, 255, Emgu.CV.CvEnum.ThresholdType.Otsu);
+            var faceNames = new List<Bitmap>();
+            Image<Gray, byte> grayframe = ImageFrame.Convert<Gray, byte>();
+            var faces = cascadeClassifier.DetectMultiScale(grayframe, 1.1, 10, System.Drawing.Size.Empty);
+            if (faces.Length > 0)
+            {
+                Bitmap BmpInput = grayframe.ToBitmap();
+                Bitmap ExtractedFace;
+                Graphics FaceCanvas;
 
-            Bitmap img = imgBinarize.ToBitmap();
-            ImageAfter.Source = ImageSourceFromBitmap(img);
-            */
+                foreach (var face in faces)
+                {
+                    ImageFrame.Draw(face, new Bgr(System.Drawing.Color.Blue), 4);
+                    ExtractedFace = new Bitmap(face.Width, face.Height);
+                    FaceCanvas = Graphics.FromImage(ExtractedFace);
+                    FaceCanvas.DrawImage(BmpInput, 0, 0, face, GraphicsUnit.Pixel);
+                    if (face.Width < 100) { return; }
+                    int w = face.Width;
+                    int h = face.Height;
+                    int x = face.X;
+                    int y = face.Y;
+
+                    int r = Math.Max(250, 250) / 2;
+                    int centerx = x + w / 2;
+                    int centery = y + h / 2;
+                    int nx = (int)(centerx - r);
+                    int ny = (int)(centery - r);
+                    int nr = (int)(r * 5);
+
+
+                    double zoomFactor = (double)197 / (double)face.Width;
+                    System.Drawing.Size newSize = new System.Drawing.Size((int)(InputImg.Width * zoomFactor), (int)(InputImg.Height * zoomFactor));
+                    Bitmap bmp = new Bitmap(InputImg, newSize);
+                    System.Drawing.Image image = bmp;
+                    var imgextract = CropImage(image, nx + 4, ny - 25, 248, 340);
+
+                    faceNames.Add(imgextract);
+                }
+
+                for (int i = 0; i < faceNames.Count; i++)
+                {
+                    System.Drawing.Image imageNewSize = faceNames[i];
+                    MemoryStream ms = new MemoryStream();
+                    imageNewSize.Save(ms, ImageFormat.Png);           //Bild im Stream speichern
+                    byte[] byteImage = ms.ToArray();
+                    string imageToBase = Convert.ToBase64String(byteImage); //Umwandlung vom Bild zu Base64String für den Request Body
+
+                    HttpClient client = new HttpClient();       //Neuer Client um Anfrage an HTTP-Server zu schicken
+                    StringContent content = new StringContent("{\"base64str\":\"" + imageToBase + "\"}", Encoding.UTF8, "application/json");
+
+                    HttpResponseMessage response = client.PutAsync("http://141.45.150.62:4711/predict", content).Result;  //Antwort auf Put-Request  
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string result = response.Content.ReadAsStringAsync().Result; //Ergebnis von Content wird ausgelesen
+
+                        JObject jObject = JObject.Parse(result); //Um auf den Inhalt zuzugreifen
+                        string resultImage = jObject.SelectToken("result").ToString(); //wieder in string uwandeln
+
+                        byte[] byteBuffer = Convert.FromBase64String(resultImage);
+                        MemoryStream memoryStream = new MemoryStream(byteBuffer)
+                        {
+                            Position = 0
+                        };
+
+                        Bitmap newImage = (Bitmap)System.Drawing.Image.FromStream(memoryStream);
+
+                        switch (i)
+                        {
+                            case 0:
+                                ImageAfter1.Source = ImageSourceFromBitmap(newImage);
+                                break;
+                            case 1:
+                                ImageAfter2.Source = ImageSourceFromBitmap(newImage);
+                                break;
+                            case 2:
+                                ImageAfter3.Source = ImageSourceFromBitmap(newImage);
+                                break;
+                            case 3:
+                                ImageAfter4.Source = ImageSourceFromBitmap(newImage);
+                                break;
+                            case 4:
+                                ImageAfter5.Source = ImageSourceFromBitmap(newImage);
+                                break;
+                        }
+
+                        memoryStream.Close();
+                    }
+                }
+
+                Bitmap img = ImageFrame.ToBitmap();
+                ImagePreviewer.Source = ImageSourceFromBitmap(img);
+            }
+
         }
         
-
+        
         public System.Drawing.Image AutoResizeImage(string url)
         {
             var InputImg = System.Drawing.Image.FromFile(url);
@@ -146,7 +231,7 @@ namespace GUI.pageDraft
             }
             return InputImg;
         }
-
+        /*
         private void DetectFaces()
         {
             Image<Gray, byte> grayframe = ImageFrame.Convert<Gray, byte>();
@@ -180,7 +265,7 @@ namespace GUI.pageDraft
                     double zoomFactor = (double)197 / (double)face.Width;
                     System.Drawing.Size newSize = new System.Drawing.Size((int)(InputImg.Width * zoomFactor), (int)(InputImg.Height * zoomFactor));
                     Bitmap bmp = new Bitmap(InputImg, newSize);
-                    System.Drawing.Image image = (System.Drawing.Image)bmp;
+                    System.Drawing.Image image = bmp;
                     var imgextract = CropImage(image, nx + 4, ny - 25, 248, 340);
                     ImageAfter.Source = ImageSourceFromBitmap(imgextract);
                 }
@@ -189,7 +274,7 @@ namespace GUI.pageDraft
                 ImagePreviewer.Source = ImageSourceFromBitmap(img);
             }
 
-        }
+        }*/
 
         public static Bitmap CropImage(System.Drawing.Image source, int x, int y, int width, int height)
         {

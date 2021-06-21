@@ -129,10 +129,18 @@
                        Grid.Column="2"
                        Foreground="Black"
                        FontSize="25" FontFamily="/GUI;component/Assets/#Dosis"/>
+            
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.Column="2">
+                
+                <StackPanel>
+                    <Image x:Name="ImageAfter1" Margin="0,50,20,0" Height="450"/>
+                    <Image x:Name="ImageAfter2" Margin="0,50,20,0" Height="450"/>
+                    <Image x:Name="ImageAfter3" Margin="0,50,20,0" Height="450"/>
+                    <Image x:Name="ImageAfter4" Margin="0,50,20,0" Height="450"/>
+                    <Image x:Name="ImageAfter5" Margin="0,50,20,0" Height="450"/>
+                </StackPanel>
 
-            <StackPanel Grid.Column="2">
-                <Image x:Name="ImageAfter" Margin="0,50,20,0" Height="500"/>
-            </StackPanel>
+            </ScrollViewer>
             
         </Grid>
 
