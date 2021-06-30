@@ -98,7 +98,7 @@ namespace GUI.pageDraft
         // Converter Start Button
         private void Start_Btn_Click(object sender, RoutedEventArgs e)
         {
-            // Face Detedtor Code
+            // Face Detector Code
             var faceNames = new List<Bitmap>();
             Image<Gray, byte> grayframe = ImageFrame.Convert<Gray, byte>();
             var faces = cascadeClassifier.DetectMultiScale(grayframe, 1.1, 10, System.Drawing.Size.Empty);
@@ -192,6 +192,7 @@ namespace GUI.pageDraft
                     // detected faces will be shown
                     Bitmap img = ImageFrame.ToBitmap();
                     ImagePreviewer.Source = ImageSourceFromBitmap(img);
+                }
             }
 
         }
@@ -283,7 +284,7 @@ namespace GUI.pageDraft
                 ImagePreviewer.Source = ImageSourceFromBitmap(img);
             }
 
-        }*/
+        }
 
         // Crop Image Code
         public static Bitmap CropImage(System.Drawing.Image source, int x, int y, int width, int height)
