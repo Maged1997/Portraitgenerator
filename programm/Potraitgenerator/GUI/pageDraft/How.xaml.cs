@@ -31,12 +31,11 @@ namespace GUI.pageDraft
     /// </summary>
     public partial class How : Page
     {
-
         // Converter Variable
-
         System.Drawing.Image InputImg;
         Image<Bgr, byte> ImageFrame;
 
+        // Haarcascade Path
         private CascadeClassifier cascadeClassifier = new CascadeClassifier(@"C:\Users\Azim Izzudin\source\repos\OMG2\OMG2\haarcascade_frontalface_default.xml");
 
         // Bitmap to Imagesource Converter
@@ -59,20 +58,26 @@ namespace GUI.pageDraft
             InitializeComponent();
         }
 
-        // Drag and Drop
+        // Drag and Drop Image
         private void Rectangle_Drop(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
+                Start_Btn.IsEnabled = true;
+
                 string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
                 string fileName = System.IO.Path.GetFileName(files[0]);
                 Uri filePath = new Uri(files[0]);
 
-                ImagePreviewer.Source = new BitmapImage(filePath);
-
+                string file = filePath.ToString();
+                InputImg = AutoResizeImage(file);
+                ImageFrame = new Image<Bgr, byte>(new Bitmap(InputImg));
+                Bitmap img = ImageFrame.ToBitmap();
+                ImagePreviewer.Source = ImageSourceFromBitmap(img);
             }
         }
 
+        // Choose Image
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -90,9 +95,10 @@ namespace GUI.pageDraft
             }
         }
 
-        
+        // Converter Start Button
         private void Start_Btn_Click(object sender, RoutedEventArgs e)
         {
+            // Face Detedtor Code
             var faceNames = new List<Bitmap>();
             Image<Gray, byte> grayframe = ImageFrame.Convert<Gray, byte>();
             var faces = cascadeClassifier.DetectMultiScale(grayframe, 1.1, 10, System.Drawing.Size.Empty);
@@ -131,63 +137,15 @@ namespace GUI.pageDraft
                     faceNames.Add(imgextract);
                 }
 
-                for (int i = 0; i < faceNames.Count; i++)
-                {
-                    System.Drawing.Image imageNewSize = faceNames[i];
-                    MemoryStream ms = new MemoryStream();
-                    imageNewSize.Save(ms, ImageFormat.Png);           //Bild im Stream speichern
-                    byte[] byteImage = ms.ToArray();
-                    string imageToBase = Convert.ToBase64String(byteImage); //Umwandlung vom Bild zu Base64String für den Request Body
 
-                    HttpClient client = new HttpClient();       //Neuer Client um Anfrage an HTTP-Server zu schicken
-                    StringContent content = new StringContent("{\"base64str\":\"" + imageToBase + "\"}", Encoding.UTF8, "application/json");
-
-                    HttpResponseMessage response = client.PutAsync("http://141.45.150.62:4711/predict", content).Result;  //Antwort auf Put-Request  
-                    if (response.IsSuccessStatusCode)
-                    {
-                        string result = response.Content.ReadAsStringAsync().Result; //Ergebnis von Content wird ausgelesen
-
-                        JObject jObject = JObject.Parse(result); //Um auf den Inhalt zuzugreifen
-                        string resultImage = jObject.SelectToken("result").ToString(); //wieder in string uwandeln
-
-                        byte[] byteBuffer = Convert.FromBase64String(resultImage);
-                        MemoryStream memoryStream = new MemoryStream(byteBuffer)
-                        {
-                            Position = 0
-                        };
-
-                        Bitmap newImage = (Bitmap)System.Drawing.Image.FromStream(memoryStream);
-
-                        switch (i)
-                        {
-                            case 0:
-                                ImageAfter1.Source = ImageSourceFromBitmap(newImage);
-                                break;
-                            case 1:
-                                ImageAfter2.Source = ImageSourceFromBitmap(newImage);
-                                break;
-                            case 2:
-                                ImageAfter3.Source = ImageSourceFromBitmap(newImage);
-                                break;
-                            case 3:
-                                ImageAfter4.Source = ImageSourceFromBitmap(newImage);
-                                break;
-                            case 4:
-                                ImageAfter5.Source = ImageSourceFromBitmap(newImage);
-                                break;
-                        }
-
-                        memoryStream.Close();
-                    }
-                }
-
+                // detected faces will be shown
                 Bitmap img = ImageFrame.ToBitmap();
                 ImagePreviewer.Source = ImageSourceFromBitmap(img);
             }
 
         }
         
-        
+        // Auto Resize Code
         public System.Drawing.Image AutoResizeImage(string url)
         {
             var InputImg = System.Drawing.Image.FromFile(url);
@@ -276,6 +234,7 @@ namespace GUI.pageDraft
 
         }*/
 
+        // Crop Image Code
         public static Bitmap CropImage(System.Drawing.Image source, int x, int y, int width, int height)
         {
             System.Drawing.Rectangle crop = new System.Drawing.Rectangle(x, y, width, height);
