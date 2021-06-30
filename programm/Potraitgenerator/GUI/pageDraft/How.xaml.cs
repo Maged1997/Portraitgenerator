@@ -137,10 +137,35 @@ namespace GUI.pageDraft
                     faceNames.Add(imgextract);
                 }
 
+                System.Drawing.Image imageNewSize = faceNames[i];
+                MemoryStream ms = new MemoryStream();
+                imageNewSize.Save(ms, ImageFormat.Png); //Bild im Stream speichern
+                byte[] byteImage = ms.ToArray();
+                string imageToBase = Convert.ToBase64String(byteImage); //Umwandlung vom Bild zu Base64String für den Request Body
 
-                // detected faces will be shown
-                Bitmap img = ImageFrame.ToBitmap();
-                ImagePreviewer.Source = ImageSourceFromBitmap(img);
+                HttpClient client = new HttpClient(); //Neuer Client um Anfrage an HTTP-Server zu schicken
+                StringContent content = new StringContent("{\"base64str\":\"" + imageToBase + "\"}", Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response = client.PutAsync("http://141.45.150.62:4711/predict", content).Result; //Antwort auf Put-Request
+                if (response.IsSuccessStatusCode)
+                {
+                    string result = response.Content.ReadAsStringAsync().Result; //Ergebnis von Content wird ausgelesen
+
+                    JObject jObject = JObject.Parse(result); //Um auf den Inhalt zuzugreifen
+                    string resultImage = jObject.SelectToken("result").ToString(); //wieder in string uwandeln
+
+                    byte[] byteBuffer = Convert.FromBase64String(resultImage);
+                    MemoryStream memoryStream = new MemoryStream(byteBuffer)
+                    {
+                        Position = 0
+                    };
+
+                    Bitmap newImage = (Bitmap)System.Drawing.Image.FromStream(memoryStream);
+
+
+                    // detected faces will be shown
+                    Bitmap img = ImageFrame.ToBitmap();
+                    ImagePreviewer.Source = ImageSourceFromBitmap(img);
             }
 
         }
