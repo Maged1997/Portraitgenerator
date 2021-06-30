@@ -98,7 +98,7 @@ namespace GUI.pageDraft
         // Converter Start Button
         private void Start_Btn_Click(object sender, RoutedEventArgs e)
         {
-            // Face Detedtor Code
+            // Face Detector Code
             var faceNames = new List<Bitmap>();
             Image<Gray, byte> grayframe = ImageFrame.Convert<Gray, byte>();
             var faces = cascadeClassifier.DetectMultiScale(grayframe, 1.1, 10, System.Drawing.Size.Empty);
