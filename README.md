@@ -1,12 +1,12 @@
-# Programmierprojekt: <Themenname>
+# Programmierprojekt: Portraitgenerator
 
 * Teammitglieder:
-	1. <Name1>
-	2. <Name2>
-	3. <Name3>
-	4. <Name4>
-* Team: <Teamnummer>
-* Semester: 
+	1. Azim Izzudin Ramadhani Mubarak
+	2. Sefa Batuhann Aykac
+	3. Maged Yakan
+	
+* Team: 04
+* Semester: Sommersemester 2021 
 
 Hier eine Kurzbeschreibung Ihres Projektes in 2-3 Sätzen
 
