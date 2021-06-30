@@ -8,7 +8,7 @@
 * Team: 04
 * Semester: Sommersemester 2021 
 
-Hier eine Kurzbeschreibung Ihres Projektes in 2-3 Sätzen
+Ziel dieses Themas ist es, eine Software zu schreiben, welche große Fotosammlungen nach Gesichtern durchsucht und alle gefundenen Gesichter mit Hilfe eines neuronalen Netzwerkes (https://github.com/yiranran/APDrawingGAN) in Strichzeichnungen umwandelt. Das neuronale Netzwerk wird usn zur Verfügung gestellt.
 
 ## Installationshinweise
 
