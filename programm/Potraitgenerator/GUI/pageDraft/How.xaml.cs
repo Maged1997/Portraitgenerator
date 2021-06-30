@@ -166,6 +166,7 @@ namespace GUI.pageDraft
                     // detected faces will be shown
                     Bitmap img = ImageFrame.ToBitmap();
                     ImagePreviewer.Source = ImageSourceFromBitmap(img);
+                }
             }
 
         }
@@ -214,50 +215,6 @@ namespace GUI.pageDraft
             }
             return InputImg;
         }
-        /*
-        private void DetectFaces()
-        {
-            Image<Gray, byte> grayframe = ImageFrame.Convert<Gray, byte>();
-            var faces = cascadeClassifier.DetectMultiScale(grayframe, 1.1, 10, System.Drawing.Size.Empty);
-            if (faces.Length > 0)
-            {
-                Bitmap BmpInput = grayframe.ToBitmap();
-                Bitmap ExtractedFace;
-                Graphics FaceCanvas;
-
-                foreach (var face in faces)
-                {
-                    ImageFrame.Draw(face, new Bgr(System.Drawing.Color.Blue), 4);
-                    ExtractedFace = new Bitmap(face.Width, face.Height);
-                    FaceCanvas = Graphics.FromImage(ExtractedFace);
-                    FaceCanvas.DrawImage(BmpInput, 0, 0, face, GraphicsUnit.Pixel);
-                    if (face.Width < 100) { return; }
-                    int w = face.Width;
-                    int h = face.Height;
-                    int x = face.X;
-                    int y = face.Y;
-
-                    int r = Math.Max(250, 250) / 2;
-                    int centerx = x + w / 2;
-                    int centery = y + h / 2;
-                    int nx = (int)(centerx - r);
-                    int ny = (int)(centery - r);
-                    int nr = (int)(r * 5);
-
-
-                    double zoomFactor = (double)197 / (double)face.Width;
-                    System.Drawing.Size newSize = new System.Drawing.Size((int)(InputImg.Width * zoomFactor), (int)(InputImg.Height * zoomFactor));
-                    Bitmap bmp = new Bitmap(InputImg, newSize);
-                    System.Drawing.Image image = bmp;
-                    var imgextract = CropImage(image, nx + 4, ny - 25, 248, 340);
-                    ImageAfter.Source = ImageSourceFromBitmap(imgextract);
-                }
-
-                Bitmap img = ImageFrame.ToBitmap();
-                ImagePreviewer.Source = ImageSourceFromBitmap(img);
-            }
-
-        }*/
 
         // Crop Image Code
         public static Bitmap CropImage(System.Drawing.Image source, int x, int y, int width, int height)
