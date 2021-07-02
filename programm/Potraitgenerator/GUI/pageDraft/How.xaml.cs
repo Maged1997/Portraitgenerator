@@ -34,8 +34,9 @@ namespace GUI.pageDraft
         // Converter Variable
         System.Drawing.Image InputImg;
         Image<Bgr, byte> ImageFrame;
+        List<Image<Bgr, byte>> ImageFrameList = new List<Image<Bgr, byte>>(); // 
 
-        // Haarcascade Path
+        // Haarcascade Path - for Face Detector
         private CascadeClassifier cascadeClassifier = new CascadeClassifier(@"C:\Users\Azim Izzudin\source\repos\OMG2\OMG2\haarcascade_frontalface_default.xml");
 
         // Bitmap to Imagesource Converter
@@ -58,89 +59,106 @@ namespace GUI.pageDraft
             InitializeComponent();
         }
 
-        // Drag and Drop Image
-        private void Rectangle_Drop(object sender, DragEventArgs e)
-        {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
-            {
-                Start_Btn.IsEnabled = true;
 
-                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-                string fileName = System.IO.Path.GetFileName(files[0]);
-                Uri filePath = new Uri(files[0]);
-
-                string file = filePath.ToString();
-                InputImg = AutoResizeImage(file);
-                ImageFrame = new Image<Bgr, byte>(new Bitmap(InputImg));
-                Bitmap img = ImageFrame.ToBitmap();
-                ImagePreviewer.Source = ImageSourceFromBitmap(img);
-            }
-        }
-
-        // Choose Image
+        // Choose Image Button
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Image files (*.png;*.jpeg;*.jpg)|*.png;*.jpeg;*.jpg|All files (*.*)|*.*";
+            OpenFileDialog openFileDialog = new OpenFileDialog() { Multiselect = true }; // Can select more than one data 
+            openFileDialog.Filter = "Image files (*.png;*.jpeg;*.jpg)|*.png;*.jpeg;*.jpg|All files (*.*)|*.*"; // Filter
             bool? response = openFileDialog.ShowDialog();
+            var fileName = new List<string>();
 
             if (response == true)
             {
                 Start_Btn.IsEnabled = true;
 
-                InputImg = AutoResizeImage(openFileDialog.FileName);
-                ImageFrame = new Image<Bgr, byte>(new Bitmap(InputImg));
-                Bitmap img = ImageFrame.ToBitmap();
-                ImagePreviewer.Source = ImageSourceFromBitmap(img);
+                foreach (String file in openFileDialog.FileNames)
+                {
+                    fileName.Add(file); // Add all selected images to a List <>
+                }
+
+                for(int i = 0; i < fileName.Count; i++) // For each image in List<> fileName will be displayed 
+                {
+                    InputImg = AutoResizeImage(fileName[i]);
+                    ImageFrame = new Image<Bgr, byte>(new Bitmap(InputImg));
+
+                    ImageFrameList.Add(ImageFrame); // All images to be used in Face Detector are added into new List<> ImageFrameList
+
+                    Bitmap img = ImageFrame.ToBitmap();
+
+                    switch (i) // Up to 5 images will be displayed
+                    {
+                        case 0:
+                            ImagePreviewer1.Source = ImageSourceFromBitmap(img);
+                            break;
+                        case 1:
+                            ImagePreviewer2.Source = ImageSourceFromBitmap(img);
+                            break;
+                        case 2:
+                            ImagePreviewer3.Source = ImageSourceFromBitmap(img);
+                            break;
+                        case 3:
+                            ImagePreviewer4.Source = ImageSourceFromBitmap(img);
+                            break;
+                        case 4:
+                            ImagePreviewer5.Source = ImageSourceFromBitmap(img);
+                            break;
+                    }
+                }
             }
         }
 
         // Converter Start Button
         private void Start_Btn_Click(object sender, RoutedEventArgs e)
         {
+            var faceNames = new List<Bitmap>();
+
             // Face Detector Code
-            var faceNames = new List<Bitmap>(); 
-            Image<Gray, byte> grayframe = ImageFrame.Convert<Gray, byte>();
-            var faces = cascadeClassifier.DetectMultiScale(grayframe, 1.1, 10, System.Drawing.Size.Empty);
-            if (faces.Length > 0)
+            for (int i = 0; i < ImageFrameList.Count; i++) // every image in ImageFrameList will be processed 
             {
-                Bitmap BmpInput = grayframe.ToBitmap();
-                Bitmap ExtractedFace;
-                Graphics FaceCanvas;
-
-                foreach (var face in faces)
+                Image<Gray, byte> grayframe = ImageFrameList[i].Convert<Gray, byte>();
+                var faces = cascadeClassifier.DetectMultiScale(grayframe, 1.1, 10, System.Drawing.Size.Empty);
+                if (faces.Length > 0)
                 {
-                    ImageFrame.Draw(face, new Bgr(System.Drawing.Color.Blue), 4);
-                    ExtractedFace = new Bitmap(face.Width, face.Height);
-                    FaceCanvas = Graphics.FromImage(ExtractedFace);
-                    FaceCanvas.DrawImage(BmpInput, 0, 0, face, GraphicsUnit.Pixel);
-                    if (face.Width < 100) { return; }
-                    int w = face.Width;
-                    int h = face.Height;
-                    int x = face.X;
-                    int y = face.Y;
+                    Bitmap BmpInput = grayframe.ToBitmap();
+                    Bitmap ExtractedFace;
+                    Graphics FaceCanvas;
 
-                    int r = Math.Max(250, 250) / 2;
-                    int centerx = x + w / 2;
-                    int centery = y + h / 2;
-                    int nx = (int)(centerx - r);
-                    int ny = (int)(centery - r);
-                    int nr = (int)(r * 5);
+                    foreach (var face in faces)
+                    {
+                        ImageFrame.Draw(face, new Bgr(System.Drawing.Color.Blue), 4);
+                        ExtractedFace = new Bitmap(face.Width, face.Height);
+                        FaceCanvas = Graphics.FromImage(ExtractedFace);
+                        FaceCanvas.DrawImage(BmpInput, 0, 0, face, GraphicsUnit.Pixel);
+                        if (face.Width < 100) { return; }
+                        int w = face.Width;
+                        int h = face.Height;
+                        int x = face.X;
+                        int y = face.Y;
+
+                        int r = Math.Max(250, 250) / 2;
+                        int centerx = x + w / 2;
+                        int centery = y + h / 2;
+                        int nx = (int)(centerx - r);
+                        int ny = (int)(centery - r);
+                        int nr = (int)(r * 5);
 
 
-                    double zoomFactor = (double)197 / (double)face.Width;
-                    System.Drawing.Size newSize = new System.Drawing.Size((int)(InputImg.Width * zoomFactor), (int)(InputImg.Height * zoomFactor));
-                    Bitmap bmp = new Bitmap(InputImg, newSize);
-                    System.Drawing.Image image = bmp;
-                    var imgextract = CropImage(image, nx + 4, ny - 25, 248, 340);
+                        double zoomFactor = (double)197 / (double)face.Width;
+                        System.Drawing.Size newSize = new System.Drawing.Size((int)(InputImg.Width * zoomFactor), (int)(InputImg.Height * zoomFactor));
+                        Bitmap bmp = new Bitmap(InputImg, newSize);
+                        System.Drawing.Image image = bmp;
+                        var imgextract = CropImage(image, nx + 4, ny - 25, 248, 340);
 
-                    faceNames.Add(imgextract);
+                        faceNames.Add(imgextract); // List will be added, as many faces are detected 
+
+                    }
                 }
 
                 // Converter Code
-                for (int i = 0; i < faceNames.Count; i++)
+                for (int x = 0; x < faceNames.Count; x++)
                 {
-                    System.Drawing.Image imageNewSize = faceNames[i];
+                    System.Drawing.Image imageNewSize = faceNames[x];
                     MemoryStream ms = new MemoryStream();
                     imageNewSize.Save(ms, ImageFormat.Png);           //Bild im Stream speichern
                     byte[] byteImage = ms.ToArray();
@@ -166,7 +184,7 @@ namespace GUI.pageDraft
                         Bitmap newImage = (Bitmap)System.Drawing.Image.FromStream(memoryStream);
 
                         // every face will be displayed, up to 5 face
-                        switch (i)
+                        switch (x)
                         {
                             case 0:
                                 ImageAfter1.Source = ImageSourceFromBitmap(newImage);
@@ -190,10 +208,9 @@ namespace GUI.pageDraft
 
                     // detected faces will be shown
                     Bitmap img = ImageFrame.ToBitmap();
-                    ImagePreviewer.Source = ImageSourceFromBitmap(img);
+                    ImagePreviewer1.Source = ImageSourceFromBitmap(img);
                 }
             }
-
         }
         
         // Auto Resize Code
@@ -236,8 +253,8 @@ namespace GUI.pageDraft
                     return (System.Drawing.Image)bmp;
                 }
 
-
             }
+
             return InputImg;
         }
 
@@ -253,5 +270,24 @@ namespace GUI.pageDraft
             }
             return bmp;
         }
+
+        /* Drag and Drop Image --> Probleme
+        private void Rectangle_Drop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                Start_Btn.IsEnabled = true;
+         
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                string fileName = System.IO.Path.GetFileName(files[0]);
+                Uri filePath = new Uri(files[0]);
+
+                string file = filePath.ToString();
+                InputImg = AutoResizeImage(file);
+                ImageFrame = new Image<Bgr, byte>(new Bitmap(InputImg));
+                Bitmap img = ImageFrame.ToBitmap();
+                ImagePreviewer.Source = ImageSourceFromBitmap(img);
+            }
+        }*/
     }
 }

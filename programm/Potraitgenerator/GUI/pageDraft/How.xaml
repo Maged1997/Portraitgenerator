@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:GUI.pageDraft"
       mc:Ignorable="d" 
-      d:DesignHeight="700" d:DesignWidth="1200"
+      d:DesignHeight="600" d:DesignWidth="1000"
       Title="How">
 
     <Grid>
@@ -25,7 +25,7 @@
         <Grid Margin="0,40,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="280"/>
-                <ColumnDefinition Width="400"/>
+                <ColumnDefinition Width="300"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
 
@@ -33,24 +33,9 @@
                        Foreground="Black"
                        FontSize="25" FontFamily="/GUI;component/Assets/#Dosis"/>
 
-            <!--// Drag and Drop Upload //-->
+            <!--// Upload Button //-->
 
-            <StackPanel Margin="0,90,50,0">
-
-                <Rectangle
-                        AllowDrop="True"
-                        Drop="Rectangle_Drop"
-                        Fill="WhiteSmoke"
-                        RadiusX="10"
-                        RadiusY="10"
-                        StrokeDashArray="3"
-                        StrokeThickness="6"
-                        StrokeDashCap="Flat"
-                        Stroke="Black"
-                        Height="200"
-                        Width="200">
-
-                </Rectangle>
+            <StackPanel Margin="0,30,50,0">
 
                 <Button Background="LightBlue"
                             BorderThickness="2"
@@ -58,10 +43,10 @@
                             Content="Choose photo"
                             Foreground="Black"
                             FontFamily="/GUI;component/Assets/#Dosis"
-                            FontSize="20"
-                            Height="30"
-                            Width="120"
-                            Margin="0,30,0,0" Click="Button_Click">
+                            FontSize="25"
+                            Height="50"
+                            Width="200"
+                            Margin="0,10,0,0" Click="Button_Click">
                     <Button.Resources>
 
                         <Style TargetType="{x:Type Border}">
@@ -76,45 +61,29 @@
 
             </StackPanel>
 
-            <StackPanel Margin="0,140,50,0">
-                <Image Source="photo.png"
-                               Stretch="Fill"
-                               Height="50"
-                               Width="50"/>
-
-                <TextBlock Text="Drop photo to process"
-                               FontSize="20"
-                               FontFamily="/GUI;component/Assets/#Dosis"
-                               HorizontalAlignment="Center"/>
-
-            </StackPanel>
-
-            <TextBlock Text=" 2. Are you sure? Check it!"
+            <TextBlock Text=" 2. Start Coverting"
                        Grid.Column="1"
                        Foreground="Black"
                        FontSize="25" FontFamily="/GUI;component/Assets/#Dosis"/>
-            
-            <StackPanel Grid.Column="1">
-                <Image x:Name="ImagePreviewer" Margin="0,50,30,0" Height="400" />
-                
-                <!--// Start Converter Button //-->
 
+            <!--// Start Converter Button //-->
+            <StackPanel Grid.Column="1">
                 <Button x:Name="Start_Btn" Background="LightGreen"
                     BorderThickness="4"
                     BorderBrush="Black"
                     Content="Start converting"
                     Foreground="Black"
                     FontFamily="/GUI;component/Assets/#Dosis"
-                    FontSize="30"
-                    Grid.Column="1" Width="250" Height="50"
-                    Margin="0,20,60,0" Click="Start_Btn_Click"
+                    FontSize="25"
+                    Grid.Column="1" Width="200" Height="50"
+                    Margin="0,40,50,0" Click="Start_Btn_Click"
                     IsEnabled="False"
                     >
                     <Button.Resources>
 
                         <Style TargetType="{x:Type Border}">
 
-                            <Setter Property="CornerRadius" Value="20"/>
+                            <Setter Property="CornerRadius" Value="17"/>
 
                         </Style>
 
@@ -124,24 +93,44 @@
 
             </StackPanel>
 
-
-            <TextBlock Text="3. If you sure, then..."
-                       Grid.Column="2"
-                       Foreground="Black"
-                       FontSize="25" FontFamily="/GUI;component/Assets/#Dosis"/>
-            
+            <!--// Image After Converting //-->
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.Column="2">
                 
                 <StackPanel>
-                    <Image x:Name="ImageAfter1" Margin="0,50,20,0" Height="450"/>
-                    <Image x:Name="ImageAfter2" Margin="0,50,20,0" Height="450"/>
-                    <Image x:Name="ImageAfter3" Margin="0,50,20,0" Height="450"/>
-                    <Image x:Name="ImageAfter4" Margin="0,50,20,0" Height="450"/>
-                    <Image x:Name="ImageAfter5" Margin="0,50,20,0" Height="450"/>
+                    <Image x:Name="ImageAfter1" Margin="0,50,20,0" />
+                    <Image x:Name="ImageAfter2" Margin="0,50,20,0" />
+                    <Image x:Name="ImageAfter3" Margin="0,50,20,0" />
+                    <Image x:Name="ImageAfter4" Margin="0,50,20,0" />
+                    <Image x:Name="ImageAfter5" Margin="0,50,20,0" />
+                    <Image x:Name="ImageAfter6" Margin="0,50,20,0" />
+                    <Image x:Name="ImageAfter7" Margin="0,50,20,0" />
+                    <Image x:Name="ImageAfter8" Margin="0,50,20,0" />
+                    <Image x:Name="ImageAfter9" Margin="0,50,20,0" />
+                    <Image x:Name="ImageAfter10" Margin="0,50,20,0" />
+                    
                 </StackPanel>
 
             </ScrollViewer>
             
+        </Grid>
+
+        <!--// Image Before Converting //-->
+        <Grid Margin="0,180,450,0" Width="540">
+
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+
+                <StackPanel>
+
+                    <Image x:Name="ImagePreviewer1" Margin="0,50,20,0" Width="500"/>
+                    <Image x:Name="ImagePreviewer2" Margin="0,50,20,0" Width="500"/>
+                    <Image x:Name="ImagePreviewer3" Margin="0,50,20,0" Width="500"/>
+                    <Image x:Name="ImagePreviewer4" Margin="0,50,20,0" Width="500"/>
+                    <Image x:Name="ImagePreviewer5" Margin="0,50,20,0" Width="500"/>
+
+                </StackPanel>
+
+            </ScrollViewer>
+
         </Grid>
 
     </Grid>

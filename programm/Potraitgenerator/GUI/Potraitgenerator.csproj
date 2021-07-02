@@ -140,10 +140,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="pageDraft\Image.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="pageDraft\Info.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -158,9 +154,6 @@
     </Compile>
     <Compile Include="pageDraft\How.xaml.cs">
       <DependentUpon>How.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="pageDraft\Image.xaml.cs">
-      <DependentUpon>Image.xaml</DependentUpon>
     </Compile>
     <Compile Include="pageDraft\Info.xaml.cs">
       <DependentUpon>Info.xaml</DependentUpon>
