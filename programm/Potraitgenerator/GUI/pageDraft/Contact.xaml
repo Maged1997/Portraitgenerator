@@ -26,7 +26,7 @@
                          Foreground="Black"
                         FontSize="20" FontFamily="/GUI;component/Assets/#Dosis"/>
 
-                <TextBlock  Text="Email : Mubrarak.AzimIzzudinRamadhani@Student.HTW-Berlin.de"
+                <TextBlock  Text="Email : Sefa.Aycak@Student.HTW-Berlin.de"
                         Foreground="Black"
                         FontSize="20" FontFamily="/GUI;component/Assets/#Dosis"/>
 
@@ -48,7 +48,7 @@
                           Foreground="Black"
                         FontSize="20" FontFamily="/GUI;component/Assets/#Dosis"/>
 
-                <TextBlock  Text="Email : Mubrarak.AzimIzzudinRamadhani@Student.HTW-Berlin.de"
+                <TextBlock  Text="Email : Maged.Yakan@Student.HTW-Berlin.de"
                         Foreground="Black"
                         FontSize="20" FontFamily="/GUI;component/Assets/#Dosis"/>
 
