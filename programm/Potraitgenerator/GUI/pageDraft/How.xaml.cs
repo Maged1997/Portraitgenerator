@@ -111,53 +111,67 @@ namespace GUI.pageDraft
         // Converter Start Button
         private void Start_Btn_Click(object sender, RoutedEventArgs e)
         {
-            Image<Gray, byte> grayframe = ImageFrame.Convert<Gray, byte>();//ImageFrame converted to black/white
-            var faces = cascadeClassifier.DetectMultiScale(grayframe, 1.1, 10, System.Drawing.Size.Empty); //detectmultiscale finds onlx rectangles in given Picture
-            if (faces.Length > 0)
+            var faceNames = new List<Bitmap>();
+
+            // Face Detector Code
+            for (int i = 0; i < ImageFrameList.Count; i++) // every image in ImageFrameList will be processed
             {
-
-                Bitmap BmpInput = grayframe.ToBitmap(); // white/black grayframe converted to bitmap
-                Bitmap ExtractedFace;
-                Graphics FaceCanvas; //provides method to reprent picture on screen
-
-                foreach (var face in faces)
+                Image<Gray, byte> grayframe = ImageFrame.Convert<Gray, byte>();//ImageFrame converted to black/white
+                var faces = cascadeClassifier.DetectMultiScale(grayframe, 1.1, 10, System.Drawing.Size.Empty); //detectmultiscale finds onlx rectangles in given Picture
+                if (faces.Length > 0)
                 {
+                    Bitmap BmpInput = grayframe.ToBitmap(); // white/black grayframe converted to bitmap
+                    Bitmap ExtractedFace;
+                    Graphics FaceCanvas; //provides method to reprent picture on screen
 
-                    ImageFrame.Draw(face, new Bgr(System.Drawing.Color.Blue), 4);
-                    ExtractedFace = new Bitmap(face.Width, face.Height);
-                    FaceCanvas = Graphics.FromImage(ExtractedFace); //FaceCanves coms in the Gui
-                    FaceCanvas.DrawImage(BmpInput, 0, 0, face, GraphicsUnit.Pixel);
-                    if (face.Width < 100) { return; } //Width must be bigger than 100 Pixels
-                    int w = face.Width;
-                    int h = face.Height;
-                    int x = face.X;
-                    int y = face.Y;
+                    foreach (var face in faces)
+                    {
+                        ImageFrame.Draw(face, new Bgr(System.Drawing.Color.Blue), 4);
+                        ExtractedFace = new Bitmap(face.Width, face.Height);
+                        FaceCanvas = Graphics.FromImage(ExtractedFace); //FaceCanves coms in the Gui
+                        FaceCanvas.DrawImage(BmpInput, 0, 0, face, GraphicsUnit.Pixel);
+                        if (face.Width < 100) { return; } //Width must be bigger than 100 Pixels
+                        int w = face.Width;
+                        int h = face.Height;
+                        int x = face.X;
+                        int y = face.Y;
 
-                    int r = Math.Max(250, 250) / 2;
-                    int centerx = x + w / 2;
-                    int centery = y + h / 2;
-                    int nx = (int)(centerx - r);
-                    int ny = (int)(centery - r);
-                    int nr = (int)(r * 5);
-                    // Converter Code
-                    for (int x = 0; x < faceNames.Count; x++)
+                        int r = Math.Max(250, 250) / 2;
+                        int centerx = x + w / 2;
+                        int centery = y + h / 2;
+                        int nx = (int)(centerx - r);
+                        int ny = (int)(centery - r);
+                        int nr = (int)(r * 5);
+
+                        double zoomFactor = (double)197 / (double)face.Width;
+                        System.Drawing.Size newSize = new System.Drawing.Size((int)(InputImg.Width * zoomFactor), (int)(InputImg.Height * zoomFactor));
+                        Bitmap bmp = new Bitmap(InputImg, newSize);
+                        System.Drawing.Image image = bmp;
+                        var imgextract = CropImage(image, nx + 4, ny - 25, 248, 340);
+
+                        faceNames.Add(imgextract); // List will be added, as many faces are detected
+                    }
+                }
+
+                // Converter Code
+                for (int x = 0; x < faceNames.Count; x++)
                 {
                     System.Drawing.Image imageNewSize = faceNames[x];
                     MemoryStream ms = new MemoryStream();
-                    imageNewSize.Save(ms, ImageFormat.Png);           //Bild im Stream speichern
+                    imageNewSize.Save(ms, ImageFormat.Png); // Bild im Stream speichern
                     byte[] byteImage = ms.ToArray();
-                    string imageToBase = Convert.ToBase64String(byteImage); //Umwandlung vom Bild zu Base64String für den Request Body
+                    string imageToBase = Convert.ToBase64String(byteImage); // Umwandlung vom Bild zu Base64String für den Request Body
 
-                    HttpClient client = new HttpClient();       //Neuer Client um Anfrage an HTTP-Server zu schicken
+                    HttpClient client = new HttpClient(); // Neuer Client um Anfrage an HTTP-Server zu schicken
                     StringContent content = new StringContent("{\"base64str\":\"" + imageToBase + "\"}", Encoding.UTF8, "application/json");
 
-                    HttpResponseMessage response = client.PutAsync("http://141.45.150.62:4711/predict", content).Result;  //Antwort auf Put-Request  
+                    HttpResponseMessage response = client.PutAsync("http://141.45.150.62:4711/predict", content).Result; // Antwort auf Put-Request  
                     if (response.IsSuccessStatusCode)
                     {
-                        string result = response.Content.ReadAsStringAsync().Result; //Ergebnis von Content wird ausgelesen
+                        string result = response.Content.ReadAsStringAsync().Result; // Ergebnis von Content wird ausgelesen
 
-                        JObject jObject = JObject.Parse(result); //Um auf den Inhalt zuzugreifen
-                        string resultImage = jObject.SelectToken("result").ToString(); //wieder in string uwandeln
+                        JObject jObject = JObject.Parse(result); // Um auf den Inhalt zuzugreifen
+                        string resultImage = jObject.SelectToken("result").ToString(); // Wieder in string uwandeln
 
                         byte[] byteBuffer = Convert.FromBase64String(resultImage);
                         MemoryStream memoryStream = new MemoryStream(byteBuffer)
