@@ -111,7 +111,34 @@ namespace GUI.pageDraft
         // Converter Start Button
         private void Start_Btn_Click(object sender, RoutedEventArgs e)
         {
-            
+            Image<Gray, byte> grayframe = ImageFrame.Convert<Gray, byte>();//ImageFrame converted to black/white
+            var faces = cascadeClassifier.DetectMultiScale(grayframe, 1.1, 10, System.Drawing.Size.Empty); //detectmultiscale finds onlx rectangles in given Picture
+            if (faces.Length > 0)
+            {
+
+                Bitmap BmpInput = grayframe.ToBitmap(); // white/black grayframe converted to bitmap
+                Bitmap ExtractedFace;
+                Graphics FaceCanvas; //provides method to reprent picture on screen
+
+                foreach (var face in faces)
+                {
+
+                    ImageFrame.Draw(face, new Bgr(System.Drawing.Color.Blue), 4);
+                    ExtractedFace = new Bitmap(face.Width, face.Height);
+                    FaceCanvas = Graphics.FromImage(ExtractedFace); //FaceCanves coms in the Gui
+                    FaceCanvas.DrawImage(BmpInput, 0, 0, face, GraphicsUnit.Pixel);
+                    if (face.Width < 100) { return; } //Width must be bigger than 100 Pixels
+                    int w = face.Width;
+                    int h = face.Height;
+                    int x = face.X;
+                    int y = face.Y;
+
+                    int r = Math.Max(250, 250) / 2;
+                    int centerx = x + w / 2;
+                    int centery = y + h / 2;
+                    int nx = (int)(centerx - r);
+                    int ny = (int)(centery - r);
+                    int nr = (int)(r * 5);
                     // Converter Code
                     for (int x = 0; x < faceNames.Count; x++)
                 {
