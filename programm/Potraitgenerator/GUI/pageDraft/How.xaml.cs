@@ -159,6 +159,8 @@ namespace GUI.pageDraft
                         JObject jObject = JObject.Parse(result); //Um auf den Inhalt zuzugreifen
                         string resultImage = jObject.SelectToken("result").ToString(); //wieder in string uwandeln
 
+                            sdsd;
+
                         byte[] byteBuffer = Convert.FromBase64String(resultImage);
                         MemoryStream memoryStream = new MemoryStream(byteBuffer)
                         {
