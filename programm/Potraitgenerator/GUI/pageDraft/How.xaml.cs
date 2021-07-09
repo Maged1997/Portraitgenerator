@@ -34,10 +34,10 @@ namespace GUI.pageDraft
         // Converter Variable
         System.Drawing.Image InputImg;
         Image<Bgr, byte> ImageFrame;
-        List<Image<Bgr, byte>> ImageFrameList = new List<Image<Bgr, byte>>(); // 
+        List<Image<Bgr, byte>> ImageFrameList = new List<Image<Bgr, byte>>();
 
         // Haarcascade Path - for Face Detector
-        private CascadeClassifier cascadeClassifier = new CascadeClassifier(@"C:\Users\Azim Izzudin\source\repos\OMG2\OMG2\haarcascade_frontalface_default.xml");
+        private CascadeClassifier cascadeClassifier = new CascadeClassifier(@"C:\Users\Azim Izzudin\source\repos\grp04\programm\Potraitgenerator\GUI\haarcascade_frontalface_default.xml");
 
         // Bitmap to Imagesource Converter
         [DllImport("gdi32.dll", EntryPoint = "DeleteObject")]
