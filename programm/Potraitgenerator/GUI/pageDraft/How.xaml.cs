@@ -111,13 +111,13 @@ namespace GUI.pageDraft
         // Converter Start Button
         private void Start_Btn_Click(object sender, RoutedEventArgs e)
         {
-            var faceNames = new List<Bitmap>();
+            var faceNames = new List<Bitmap>(); // list for saving faces at the end
 
             // Face Detector Code
             for (int i = 0; i < ImageFrameList.Count; i++) // every image in ImageFrameList will be processed
             {
                 Image<Gray, byte> grayframe = ImageFrame.Convert<Gray, byte>();//ImageFrame converted to black/white
-                var faces = cascadeClassifier.DetectMultiScale(grayframe, 1.1, 10, System.Drawing.Size.Empty); //detectmultiscale finds onlx rectangles in given Picture
+                var faces = cascadeClassifier.DetectMultiScale(grayframe, 1.1, 10, System.Drawing.Size.Empty); //detectmultiscale finds only faces in given Picture
                 if (faces.Length > 0)
                 {
                     Bitmap BmpInput = grayframe.ToBitmap(); // white/black grayframe converted to bitmap
@@ -136,19 +136,19 @@ namespace GUI.pageDraft
                         int x = face.X;
                         int y = face.Y;
 
-                        int r = Math.Max(250, 250) / 2;
+                        int r = 125;
                         int centerx = x + w / 2;
                         int centery = y + h / 2;
                         int nx = (int)(centerx - r);
                         int ny = (int)(centery - r);
                         int nr = (int)(r * 5);
 
-                        double zoomFactor = (double)197 / (double)face.Width;
-                        System.Drawing.Size newSize = new System.Drawing.Size((int)(InputImg.Width * zoomFactor), (int)(InputImg.Height * zoomFactor));
+                        double zoomFactor = (double)197 / (double)face.Width; 
+                        System.Drawing.Size newSize = new System.Drawing.Size((int)(InputImg.Width * zoomFactor), (int)(InputImg.Height * zoomFactor)); // image is slightly zoomed in
                         Bitmap bmp = new Bitmap(InputImg, newSize);
                         System.Drawing.Image image = bmp;
-                        var imgextract = CropImage(image, nx + 4, ny - 25, 248, 340);
-
+                        var imgextract = CropImage(image, nx + 4, ny - 25, 248, 340); //Image is being cropped with the new size
+                        
                         faceNames.Add(imgextract); // List will be added, as many faces are detected
                     }
                 }
@@ -172,6 +172,8 @@ namespace GUI.pageDraft
 
                         JObject jObject = JObject.Parse(result); // Um auf den Inhalt zuzugreifen
                         string resultImage = jObject.SelectToken("result").ToString(); // Wieder in string uwandeln
+
+                            
 
                         byte[] byteBuffer = Convert.FromBase64String(resultImage);
                         MemoryStream memoryStream = new MemoryStream(byteBuffer)
@@ -212,10 +214,10 @@ namespace GUI.pageDraft
         }
         
         // Auto Resize Code
-        public System.Drawing.Image AutoResizeImage(string url)
+        public System.Drawing.Image AutoResizeImage(string url) //Line 112 - difference: this function is for single image and line 112 for a list of images
         {
-            var InputImg = System.Drawing.Image.FromFile(url);
-            var ImageFrame = new Image<Bgr, byte>(new Bitmap(InputImg));
+            var InputImg = System.Drawing.Image.FromFile(url); // difference with start_btn_click is that it only reads one image and not a list
+            var ImageFrame = new Image<Bgr, byte>(new Bitmap(InputImg)); // The image is created as Image Class for editing in C#
             Image<Gray, byte> grayframe = ImageFrame.Convert<Gray, byte>();
             var faces = cascadeClassifier.DetectMultiScale(grayframe, 1.1, 10, System.Drawing.Size.Empty);
 
@@ -237,7 +239,7 @@ namespace GUI.pageDraft
                     int x = face.X;
                     int y = face.Y;
 
-                    int r = Math.Max(250, 250) / 2;
+                    int r = 125;
                     int centerx = x + w / 2;
                     int centery = y + h / 2;
                     int nx = (int)(centerx - r);

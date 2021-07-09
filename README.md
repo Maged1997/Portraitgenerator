@@ -2,7 +2,7 @@
 
 * Teammitglieder:
 	1. Azim Izzudin Ramadhani Mubarak
-	2. Sefa Batuhann Aykac
+	2. Sefa Batuhan Aykac
 	3. Maged Yakan
 	
 * Team: 04
@@ -12,11 +12,19 @@ Ziel dieses Themas ist es, eine Software zu schreiben, welche große Fotosammlun
 
 ## Installationshinweise
 
-Hier Anweisungen hinterlegen die fuer eine Installation notwendig sind. Diese muessen 100% vollstaendig sein
+Damit das Programm einwandfrei funktioniert müssen folgende Pakete installiert bzw. hinzugefügt werden:
+- Emgu.CV
+- Newtonsoft_Json
+- System.Drawing
+- System.IO 
+- System.Linq
+- System.Runtime
+- System.Net.HTTP 
 
 ## Verwendung der Software
 
-Wie verwendet man diese Software? Welches Programm muss man starten?
+Die Software ist abhängig von der REST-API, d.h. sie muss immer aktuell sein.
+Ohne eine gültige Programmierschnittstelle funktioniert die Software nicht.
 
 ## Links, Hinweise etc.
 
