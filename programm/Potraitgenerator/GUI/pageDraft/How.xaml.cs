@@ -37,7 +37,7 @@ namespace GUI.pageDraft
         List<Image<Bgr, byte>> ImageFrameList = new List<Image<Bgr, byte>>();
 
         // Haarcascade Path - for Face Detector
-        private CascadeClassifier cascadeClassifier = new CascadeClassifier(@"C:\Users\Azim Izzudin\source\repos\grp04\programm\Potraitgenerator\GUI\haarcascade_frontalface_default.xml");
+        private CascadeClassifier cascadeClassifier = new CascadeClassifier(AppDomain.CurrentDomain.BaseDirectory + "haarcascade_frontalface_default.xml");
 
         // Bitmap to Imagesource Converter
         [DllImport("gdi32.dll", EntryPoint = "DeleteObject")]
